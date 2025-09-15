@@ -1,0 +1,71 @@
+{
+  "traveler_name": "Trisha",
+  "itinerary": {
+    "days": [
+      {
+        "day": 1,
+        "morning": [
+          "City walking tour"
+        ],
+        "afternoon": [
+          "Museum"
+        ],
+        "evening": [
+          "Night market"
+        ]
+      }
+    ],
+    "lodging": {
+      "area": "City Center",
+      "tier": "mid",
+      "nightly_estimate": 120
+    },
+    "intra_city_transport": "Metro and rideshare",
+    "total_estimated_cost": 840.0,
+    "rationale": "Balanced culture and food focus",
+    "notes": [
+      "Light showers expected in New York. Pack a light rain jacket."
+    ],
+    "memo": "**Trip Memo: Trisha's New York City Getaway (Nov 12-20, 2025)**\n\n**Executive Summary:** This memo summarizes Trisha's relaxed 9-day NYC trip focusing on food and nightlife, booked through EaseMyTrip (EMT).  Flights (EMT-FLT-654321) and mid-tier hotel (EMT-HOT-123456, City Center) are confirmed.\n\n**Key Highlights:** Enjoy a city walking tour, museum visit, and vibrant night markets.  NYC's diverse food scene will be explored.  Expect a relaxed pace with a mix of culture and culinary experiences.\n\n**Budget Summary:** Total cost: $999 (paid, PAY-EMT-0001).  Remaining budget: $99001. Intra-city transport via metro and rideshares.\n\n**Next Steps:**  Confirm any remaining activities. Pack light rain gear (light showers expected).  Hold expiry for bookings is Sept 15th, 2025.  Enjoy your trip!"
+  },
+  "budget_fit_score": 1.0,
+  "booking_details": {
+    "provider": "EaseMyTrip",
+    "traveler": "Trisha",
+    "reservations": [
+      {
+        "type": "hotel",
+        "ref": "EMT-HOT-123456",
+        "status": "reserved"
+      },
+      {
+        "type": "flight",
+        "ref": "EMT-FLT-654321",
+        "status": "reserved"
+      }
+    ],
+    "hold_expiry": "2025-09-15T07:23:24.484345Z"
+  },
+  "payment_receipt": {
+    "status": "paid",
+    "amount": 999.0,
+    "currency": "USD",
+    "transaction_id": "PAY-EMT-0001",
+    "timestamp": "2025-09-15T07:23:24.485195Z"
+  },
+  "recommendations": [
+    "**Executive Summary:** This memo summarizes Trisha's relaxed 9-day NYC trip focusing on food and nightlife, booked through EaseMyTrip (EMT).  Flights (EMT-FLT-654321) and mid-tier hotel (EMT-HOT-123456, City Center) are confirmed.",
+    "**Next Steps:**  Confirm any remaining activities. Pack light rain gear (light showers expected).  Hold expiry for bookings is Sept 15th, 2025.  Enjoy your trip!"
+  ],
+  "workflow_messages": [
+    "content='Plan trip for: Trisha' additional_kwargs={} response_metadata={} id='fd4d60f8-f110-43a9-b0d3-51b0b48f6566'",
+    "content='Preferences collected for Trisha' additional_kwargs={} response_metadata={} id='c6e6b430-01c6-4962-b7dd-da7e334b83ca'",
+    "content='Destination data gathered for New York' additional_kwargs={} response_metadata={} id='4f51f59f-606f-4c44-9ce8-38803dd8edb0'",
+    "content='Draft itinerary generated' additional_kwargs={} response_metadata={} id='c1d1af30-0087-48b9-90fe-2d855cf0ff03'",
+    "content='Budget optimized. Fit score: 1.00' additional_kwargs={} response_metadata={} id='353474c1-ebc4-4539-889d-0d17c1a4c6ce'",
+    "content='Real-time adjustments applied' additional_kwargs={} response_metadata={} id='bee173ac-3bda-4ec1-afc9-d5905aba2e61'",
+    "content='Itinerary reserved via EaseMyTrip (simulated)' additional_kwargs={} response_metadata={} id='41a90177-d4a0-4eee-99ae-7e2fe43c9ef4'",
+    "content='Payment processed (simulated)' additional_kwargs={} response_metadata={} id='7f18e5f1-a08c-4868-b1e1-b0773d75ba2e'",
+    "content='Final itinerary and memo generated' additional_kwargs={} response_metadata={} id='edfa552c-b74a-4d24-b38f-5d739b5cc14a'"
+  ]
+}
