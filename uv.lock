@@ -21,6 +21,7 @@ name = "agenticaihack"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "amadeus" },
     { name = "google-adk" },
     { name = "google-genai" },
     { name = "google-generativeai" },
@@ -31,6 +32,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "amadeus", specifier = ">=12.0.0" },
     { name = "google-adk", specifier = ">=1.14.0" },
     { name = "google-genai", specifier = ">=1.36.0" },
     { name = "google-generativeai", specifier = ">=0.8.5" },
@@ -53,6 +55,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/9a/ca/4dc52902cf3491892
 wheels = [
     { url = "https://files.pythonhosted.org/packages/39/4a/4c61d4c84cfd9befb6fa08a702535b27b21fff08c946bc2f6139decbf7f7/alembic-1.16.5-py3-none-any.whl", hash = "sha256:e845dfe090c5ffa7b92593ae6687c5cb1a101e91fa53868497dbd79847f9dbe3", size = 247355, upload-time = "2025-08-27T18:02:07.37Z" },
 ]
+
+[[package]]
+name = "amadeus"
+version = "12.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/96/e0/d5f8395c2ab9ea6248c2b4f6aa1fc6857a62bd8a189510e744fd6c86c309/amadeus-12.0.0.tar.gz", hash = "sha256:80d4b844cdfc2ada937061949b04527b0c2fe229d276eeb554b78ef778b053a5", size = 36750, upload-time = "2025-03-11T13:48:30.696Z" }
 
 [[package]]
 name = "annotated-types"
