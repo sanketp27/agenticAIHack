@@ -10,6 +10,7 @@ PROJECT_ID="your-project-id"
 REGION="us-central1"
 SERVICE_NAME="travel-planner"
 GOOGLE_API_KEY="your-google-api-key-here"
+GEMINI_MODEL="gemini-2.5-flash"
 
 echo "🚀 Manually deploying Travel Planner to Google Cloud Run..."
 
@@ -36,7 +37,7 @@ gcloud run deploy $SERVICE_NAME \
   --region $REGION \
   --platform managed \
   --allow-unauthenticated \
-  --set-env-vars GOOGLE_API_KEY="$GOOGLE_API_KEY",GEMINI_MODEL="gemini-1.5-pro" \
+  --set-env-vars GOOGLE_API_KEY="$GOOGLE_API_KEY",GEMINI_MODEL="$GEMINI_MODEL"\
   --memory 1Gi \
   --cpu 1 \
   --min-instances 0 \

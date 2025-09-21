@@ -22,7 +22,7 @@ steps:
     - 'managed'
     - '--allow-unauthenticated'
     - '--set-env-vars'
-    - 'GOOGLE_API_KEY=$$GOOGLE_API_KEY,GEMINI_MODEL=gemini-1.5-pro'
+    - 'GOOGLE_API_KEY=$$GOOGLE_API_KEY,GEMINI_MODEL=gemini-2.5-flash'
     secretEnv: ['GOOGLE_API_KEY']
 
 availableSecrets:
