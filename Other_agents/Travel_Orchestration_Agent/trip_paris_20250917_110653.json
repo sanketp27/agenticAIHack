@@ -1,0 +1,71 @@
+{
+  "traveler_name": "Hack",
+  "itinerary": {
+    "days": [
+      {
+        "day": 1,
+        "morning": [
+          "City walking tour"
+        ],
+        "afternoon": [
+          "Museum"
+        ],
+        "evening": [
+          "Night market"
+        ]
+      }
+    ],
+    "lodging": {
+      "area": "City Center",
+      "tier": "mid",
+      "nightly_estimate": 120
+    },
+    "intra_city_transport": "Metro and rideshare",
+    "total_estimated_cost": 840.0,
+    "rationale": "Balanced culture and food focus",
+    "notes": [
+      "Light showers expected in Paris. Pack a light rain jacket."
+    ],
+    "memo": "**Trip Memo: Hack's Paris Adventure (Oct 30 - Nov 12, 2025)**\n\n**Executive Summary:** This memo summarizes your relaxed 13-day Paris trip for 5 people, booked via EaseMyTrip (EMT).  Your mid-tier accommodation is in the City Center (EMT-HOT-123456). Flights are confirmed (EMT-FLT-654321).\n\n**Key Highlights:**  Enjoy a balanced itinerary including a city walking tour, museum visit, and night market exploration.  Light rain is expected; pack accordingly.\n\n**Budget Summary:** Total estimated cost: $840 (USD 999 paid).  Remaining budget:  USD 1999160 (based on $2,000,000 total budget and $840 estimated cost).  Note: This excludes personal spending.\n\n**Next Steps:**  Confirm all reservations by Sept 17th (hold expiry).  Pack light rain jacket.  Enjoy your trip!"
+  },
+  "budget_fit_score": 1.0,
+  "booking_details": {
+    "provider": "EaseMyTrip",
+    "traveler": "Hack",
+    "reservations": [
+      {
+        "type": "hotel",
+        "ref": "EMT-HOT-123456",
+        "status": "reserved"
+      },
+      {
+        "type": "flight",
+        "ref": "EMT-FLT-654321",
+        "status": "reserved"
+      }
+    ],
+    "hold_expiry": "2025-09-17T05:36:50.736668Z"
+  },
+  "payment_receipt": {
+    "status": "paid",
+    "amount": 999.0,
+    "currency": "USD",
+    "transaction_id": "PAY-EMT-0001",
+    "timestamp": "2025-09-17T05:36:50.736961Z"
+  },
+  "recommendations": [
+    "**Executive Summary:** This memo summarizes your relaxed 13-day Paris trip for 5 people, booked via EaseMyTrip (EMT).  Your mid-tier accommodation is in the City Center (EMT-HOT-123456). Flights are confirmed (EMT-FLT-654321).",
+    "**Next Steps:**  Confirm all reservations by Sept 17th (hold expiry).  Pack light rain jacket.  Enjoy your trip!"
+  ],
+  "workflow_messages": [
+    "content='Plan trip for: Hack' additional_kwargs={} response_metadata={} id='27ddbc34-f46a-49c9-b0dd-1b7aea1df38e'",
+    "content='Preferences collected for Hack' additional_kwargs={} response_metadata={} id='aa96f011-934e-4891-bcda-1f6f203df7f7'",
+    "content='Destination data gathered for Paris' additional_kwargs={} response_metadata={} id='42707bd1-c33e-4296-baa8-b7bf250b150b'",
+    "content='Draft itinerary generated' additional_kwargs={} response_metadata={} id='78ab851f-b81f-4de9-9c54-2856ca904f08'",
+    "content='Budget optimized. Fit score: 1.00' additional_kwargs={} response_metadata={} id='31fcb386-4db2-471f-89cf-beced24f41d6'",
+    "content='Real-time adjustments applied' additional_kwargs={} response_metadata={} id='ec8b3e5e-883d-43a4-a4cb-1c6e09564b6b'",
+    "content='Itinerary reserved via EaseMyTrip (simulated)' additional_kwargs={} response_metadata={} id='bbf0d360-9b96-436d-b813-f20b6aa74e87'",
+    "content='Payment processed (simulated)' additional_kwargs={} response_metadata={} id='a0670fe2-84ac-49ef-9ac8-e38e8adbe64c'",
+    "content='Final itinerary and memo generated' additional_kwargs={} response_metadata={} id='cb70b1a2-bfa0-4658-9f8b-f23307284759'"
+  ]
+}
