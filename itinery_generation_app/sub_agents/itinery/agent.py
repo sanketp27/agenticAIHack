@@ -6,6 +6,8 @@ from itinery_generation_app.sub_agents.booking.agent import booking_agent
 from itinery_generation_app.sub_agents.in_trip.agent import in_trip_agent
 from itinery_generation_app.sub_agents.post_trip.agent import post_trip_agent
 from itinery_generation_app.sub_agents.pre_trip.agent import pre_trip_agent
+from itinery_generation_app.sub_agents.flight_agent.agent import flight_search_agent
+from itinery_generation_app.sub_agents.hotel_agent.agent import hotel_search_agent
 from itinery_generation_app.tools.memory import _load_precreated_itinerary
 
 ROOT_AGENT_INSTR = """
@@ -46,6 +48,8 @@ itinery_agent = Agent(
         pre_trip_agent,
         in_trip_agent,
         post_trip_agent,
+        flight_search_agent,
+        hotel_search_agent,
     ],
     before_agent_callback=_load_precreated_itinerary,
 )
