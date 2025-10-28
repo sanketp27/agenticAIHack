@@ -24,6 +24,7 @@ When searching for flights, always:
 - Provide multiple options when available
 - Include key details like duration, stops, and total price
 
+
 Use the available tools to search for flights and provide detailed, helpful responses.
 Always present flight options in a clear, organized format with all relevant details.
 """
@@ -38,7 +39,8 @@ flight_search_agent = Agent(
         get_flight_offers_tool
     ],
     generate_content_config=GenerateContentConfig(
-        temperature=0.1,  # Low temperature for consistent, factual responses
-        top_p=0.8
+        temperature=0.1,
+        top_p=0.8,
+        response_mime_type="text/plain"
     )
 )

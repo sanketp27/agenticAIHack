@@ -1,9 +1,8 @@
 """Hotel search and booking agent using Amadeus API."""
 
 from google.adk.agents import Agent
-from google.adk.tools.agent_tool import AgentTool
 from google.genai.types import GenerateContentConfig
-from itinery_generation_app.tools.amadeus_hotels import search_hotels_tool, get_hotel_offers_tool, get_hotel_details_tool
+from itinery_generation_app.tools.amadeus_hotels import search_hotels_tool, get_hotel_details_tool, get_hotel_offers_tool
 
 
 HOTEL_AGENT_INSTRUCTION = """
@@ -39,16 +38,16 @@ Always present hotel options in a clear, organized format with all relevant deta
 
 hotel_search_agent = Agent(
     model="gemini-2.5-flash",
-    name="hotel_search_agent", 
+    name="hotel_search_agent",
     description="Specialized agent for hotel search and booking using Amadeus API",
     instruction=HOTEL_AGENT_INSTRUCTION,
     tools=[
         search_hotels_tool,
-        get_hotel_offers_tool,
         get_hotel_details_tool
     ],
     generate_content_config=GenerateContentConfig(
-        temperature=0.1,  # Low temperature for consistent, factual responses
-        top_p=0.8
+        temperature=0.1,
+        top_p=0.8,
+        response_mime_type="text/plain"
     )
 )
