@@ -97,7 +97,7 @@ class AmadeusFlightsService:
             "children": children,
             "infants": infants,
             "travelClass": travel_class.upper(),
-            "currencyCode": "USD",
+            "currencyCode": "INR",
             "max": 10  # Limit results to a manageable number
         }
 
@@ -148,7 +148,7 @@ def search_flights_tool(
         return_date: The return date in YYYY-MM-DD format. Omit for one-way flights.
         adults: The number of adult passengers (age 12+). Defaults to 1.
         travel_class: The desired cabin class. Can be ECONOMY, PREMIUM_ECONOMY, BUSINESS, or FIRST. Defaults to ECONOMY.
-        max_price: The maximum total price for the flight in USD. Optional.
+        max_price: The maximum total price for the flight in INR. Optional.
         tool_context: The execution context for the tool provided by the ADK.
 
     Returns:

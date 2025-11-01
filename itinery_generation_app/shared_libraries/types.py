@@ -17,7 +17,7 @@ class Room(BaseModel):
     is_available: bool = Field(
         description="Whether the room type is available for selection."
     )
-    price_in_usd: int = Field(description="The cost of the room selection.")
+    price_in_inr: int = Field(description="The cost of the room selection in Indian Rupees.")
     room_type: str = Field(
         description="Type of room, e.g. Twin with Balcon, King with Ocean View... etc."
     )
@@ -48,7 +48,7 @@ class Seat(BaseModel):
     is_available: bool = Field(
         description="Whether the seat is available for selection."
     )
-    price_in_usd: int = Field(description="The cost of the seat selection.")
+    price_in_inr: int = Field(description="The cost of the seat selection in Indian Rupees.")
     seat_number: str = Field(description="Seat number, e.g. 22A, 34F... etc.")
 
 
@@ -75,7 +75,7 @@ class Flight(BaseModel):
         description="Airline names, e.g., American Airlines, Emirates"
     )
     airline_logo: str = Field(description="Airline logo location")
-    price_in_usd: int = Field(description="Flight price in US dollars")
+    price_in_inr: int = Field(description="Flight price in Indian Rupees")
     number_of_stops: int = Field(description="Number of stops during the flight")
 
 
@@ -204,7 +204,7 @@ class UserProfile(BaseModel):
         default=[], description="Vegetarian, Vegan... etc."
     )
     passport_nationality: str = Field(
-        description="Nationality of traveler, e.g. US Citizen"
+        description="Nationality of traveler, e.g. Indian Citizen"
     )
     home_address: str = Field(description="Home address of traveler")
     home_transit_preference: str = Field(
