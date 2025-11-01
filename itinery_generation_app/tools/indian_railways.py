@@ -182,6 +182,94 @@ class IndianRailwaysService:
         }
         return self._get(endpoint, params)
 
+    def get_trains_by_station(self, station_code: str) -> Dict[str, Any]:
+        """Get all trains passing through a specific station using RapidAPI IRCTC.
+
+        Args:
+            station_code: Station code (e.g., "NDLS" for New Delhi, "BCT" for Mumbai Central)
+        
+        Returns:
+            Dictionary containing list of trains passing through the station
+        """
+        endpoint = os.getenv("RAIL_TRAINS_BY_STATION_ENDPOINT", "/api/v3/getTrainsByStation")
+        params = {
+            "stationCode": station_code.upper()
+        }
+        return self._get(endpoint, params)
+
+    def check_seat_availability(
+        self,
+        train_number: str,
+        from_station: str,
+        to_station: str,
+        class_type: str,
+        quota: str,
+        date: str
+    ) -> Dict[str, Any]:
+        """Check seat availability for a specific train using RapidAPI IRCTC.
+
+        Args:
+            train_number: Numeric train number as string (e.g., "19038")
+            from_station: Source station code (e.g., "ST")
+            to_station: Destination station code (e.g., "BVI")
+            class_type: Class type (e.g., "2A", "3A", "SL", "1A", "2S", "CC")
+            quota: Quota type (e.g., "GN" for General, "TQ" for Tatkal, "PT" for Premium Tatkal)
+            date: Journey date in YYYY-MM-DD, YYYYMMDD format, or relative ("today", "tomorrow")
+        
+        Returns:
+            Dictionary containing seat availability information
+        """
+        endpoint = os.getenv("RAIL_SEAT_AVAILABILITY_ENDPOINT", "/api/v2/checkSeatAvailability")
+        formatted_date = self._normalize_date(date)
+        params = {
+            "trainNo": train_number,
+            "fromStationCode": from_station.upper(),
+            "toStationCode": to_station.upper(),
+            "classType": class_type.upper(),
+            "quota": quota.upper(),
+            "dateOfJourney": formatted_date
+        }
+        return self._get(endpoint, params)
+
+    def get_train_schedule(self, train_number: str) -> Dict[str, Any]:
+        """Get complete schedule/route for a specific train using RapidAPI IRCTC.
+
+        Args:
+            train_number: Numeric train number as string (e.g., "12936")
+        
+        Returns:
+            Dictionary containing train schedule with all stations, timings, and distances
+        """
+        endpoint = os.getenv("RAIL_TRAIN_SCHEDULE_ENDPOINT", "/api/v1/getTrainSchedule")
+        params = {
+            "trainNo": train_number
+        }
+        return self._get(endpoint, params)
+
+    def get_train_fare(
+        self,
+        train_number: str,
+        from_station: str,
+        to_station: str
+    ) -> Dict[str, Any]:
+        """Get fare information for a specific train between two stations using RapidAPI IRCTC.
+
+        Args:
+            train_number: Numeric train number as string (e.g., "19038")
+            from_station: Source station code (e.g., "ST")
+            to_station: Destination station code (e.g., "BVI")
+        
+        Returns:
+            Dictionary containing fare information for all available classes
+        """
+        endpoint = os.getenv("RAIL_TRAIN_FARE_ENDPOINT", "/api/v2/getFare")
+        params = {
+            "trainNo": train_number,
+            "fromStationCode": from_station.upper(),
+            "toStationCode": to_station.upper()
+        }
+        return self._get(endpoint, params)
+
 
 # Service instance - will be initialized when first used
 _indian_railways_service = None
@@ -231,3 +319,139 @@ def search_trains_tool(from_station: str, to_station: str, date: str, tool_conte
         return {"error": f"Train search failed: {str(e)}"}
 
 
+def get_trains_by_station_tool(station_code: str, tool_context: ToolContext) -> Dict[str, Any]:
+    """Tool wrapper for getting trains by station using RapidAPI IRCTC.
+    
+    Args:
+        station_code: Station code (e.g., "NDLS", "BCT", "CSTM")
+        tool_context: Context for storing results
+    
+    Returns:
+        Dictionary containing list of trains passing through the station
+    """
+    try:
+        service = _get_service()
+        result = service.get_trains_by_station(station_code=station_code)
+        tool_context.state.setdefault("trains_by_station_results", []).append({
+            "search_params": {"station_code": station_code},
+            "results": result,
+        })
+        return result
+    except ValueError as e:
+        return {"error": f"Configuration error: {str(e)}. Please set RAIL_API_KEY in environment variables."}
+    except Exception as e:
+        return {"error": f"Get trains by station failed: {str(e)}"}
+
+
+def check_seat_availability_tool(
+    train_number: str,
+    from_station: str,
+    to_station: str,
+    class_type: str,
+    quota: str,
+    date: str,
+    tool_context: ToolContext
+) -> Dict[str, Any]:
+    """Tool wrapper for checking seat availability using RapidAPI IRCTC.
+    
+    Args:
+        train_number: Train number (e.g., "19038")
+        from_station: Source station code (e.g., "ST")
+        to_station: Destination station code (e.g., "BVI")
+        class_type: Class type (e.g., "2A", "3A", "SL", "1A", "2S", "CC")
+        quota: Quota type (e.g., "GN", "TQ", "PT")
+        date: Journey date
+        tool_context: Context for storing results
+    
+    Returns:
+        Dictionary containing seat availability information
+    """
+    try:
+        service = _get_service()
+        result = service.check_seat_availability(
+            train_number=train_number,
+            from_station=from_station,
+            to_station=to_station,
+            class_type=class_type,
+            quota=quota,
+            date=date
+        )
+        tool_context.state.setdefault("seat_availability_results", []).append({
+            "search_params": {
+                "train_number": train_number,
+                "from": from_station,
+                "to": to_station,
+                "class": class_type,
+                "quota": quota,
+                "date": date
+            },
+            "results": result,
+        })
+        return result
+    except ValueError as e:
+        return {"error": f"Configuration error: {str(e)}. Please set RAIL_API_KEY in environment variables."}
+    except Exception as e:
+        return {"error": f"Check seat availability failed: {str(e)}"}
+
+
+def get_train_schedule_tool(train_number: str, tool_context: ToolContext) -> Dict[str, Any]:
+    """Tool wrapper for getting train schedule using RapidAPI IRCTC.
+    
+    Args:
+        train_number: Train number (e.g., "12936")
+        tool_context: Context for storing results
+    
+    Returns:
+        Dictionary containing complete train schedule with all stations, timings, and distances
+    """
+    try:
+        service = _get_service()
+        result = service.get_train_schedule(train_number=train_number)
+        tool_context.state.setdefault("train_schedule_results", []).append({
+            "search_params": {"train_number": train_number},
+            "results": result,
+        })
+        return result
+    except ValueError as e:
+        return {"error": f"Configuration error: {str(e)}. Please set RAIL_API_KEY in environment variables."}
+    except Exception as e:
+        return {"error": f"Get train schedule failed: {str(e)}"}
+
+
+def get_train_fare_tool(
+    train_number: str,
+    from_station: str,
+    to_station: str,
+    tool_context: ToolContext
+) -> Dict[str, Any]:
+    """Tool wrapper for getting train fare using RapidAPI IRCTC.
+    
+    Args:
+        train_number: Train number (e.g., "19038")
+        from_station: Source station code (e.g., "ST")
+        to_station: Destination station code (e.g., "BVI")
+        tool_context: Context for storing results
+    
+    Returns:
+        Dictionary containing fare information for all available classes
+    """
+    try:
+        service = _get_service()
+        result = service.get_train_fare(
+            train_number=train_number,
+            from_station=from_station,
+            to_station=to_station
+        )
+        tool_context.state.setdefault("train_fare_results", []).append({
+            "search_params": {
+                "train_number": train_number,
+                "from": from_station,
+                "to": to_station
+            },
+            "results": result,
+        })
+        return result
+    except ValueError as e:
+        return {"error": f"Configuration error: {str(e)}. Please set RAIL_API_KEY in environment variables."}
+    except Exception as e:
+        return {"error": f"Get train fare failed: {str(e)}"}
