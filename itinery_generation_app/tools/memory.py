@@ -15,7 +15,7 @@ from itinery_generation_app.shared_libraries import constants
 DEFAULT_ITINERARY_STATE = {
     "state": {
         "user_profile": {
-            "passport_nationality": "US Citizen",
+            "passport_nationality": "Indian Citizen",
             "seat_preference": "window",
             "food_preference": "vegan",
             "allergies": [],
@@ -24,7 +24,7 @@ DEFAULT_ITINERARY_STATE = {
             "price_sensitivity": [],
             "home": {
                 "event_type": "home",
-                "address": "6420 Sequence Dr #400, San Diego, CA 92121, United States",
+                "address": "123 MG Road, Connaught Place, New Delhi, Delhi 110001, India",
                 "local_prefer_mode": "drive"
             }
         },

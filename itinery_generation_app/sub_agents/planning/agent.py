@@ -7,6 +7,7 @@ from itinery_generation_app.shared_libraries import types
 from itinery_generation_app.sub_agents.planning import prompt
 from itinery_generation_app.tools.memory import memorize
 from google.adk.tools import google_search, url_context
+from itinery_generation_app.sub_agents.flight_agent.agent import flight_search_agent
 
 itinerary_agent = Agent(
     model="gemini-2.5-flash",
@@ -60,18 +61,18 @@ flight_seat_selection_agent = Agent(
     generate_content_config=types.json_response_config,
 )
 
-flight_search_agent = Agent(
-    model="gemini-2.5-flash",
-    name="flight_search_agent",
-    description="Help users find best flight deals",
-    instruction=prompt.FLIGHT_SEARCH_INSTR,
-    disallow_transfer_to_parent=True,
-    disallow_transfer_to_peers=True,
-    output_schema=types.FlightsSelection,
-    output_key="flight",
-    generate_content_config=types.json_response_config,
-    tools=[google_search, url_context]
-)
+# flight_search_agent = Agent(
+#     model="gemini-2.5-flash",
+#     name="flight_search_agent",
+#     description="Help users find best flight deals",
+#     instruction=prompt.FLIGHT_SEARCH_INSTR,
+#     disallow_transfer_to_parent=True,
+#     disallow_transfer_to_peers=True,
+#     output_schema=types.FlightsSelection,
+#     output_key="flight",
+#     generate_content_config=types.json_response_config,
+#     tools=[google_search, url_context]
+# )
 
 
 planning_agent = Agent(

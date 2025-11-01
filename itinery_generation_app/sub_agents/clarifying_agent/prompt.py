@@ -7,7 +7,7 @@ A trip cannot be planned without the following details:
 - **Destination**: The target city or country.
 - **Start City**: ASk user from which places does he want to depart or start the trip
 - **Dates/Duration**: Specific travel dates (e.g., "Dec 21-28, 2025") or the trip's duration (e.g., "7 days").
-- **Budget**: A budget range (e.g., "mid-range," "$1000 - $1500 per person").
+- **Budget**: A budget range (e.g., "mid-range," "₹50,000 - ₹75,000 per person").
 - **Travelers**: The number of people traveling (e.g., "2 adults," "a family of 4").
 - **Accommodation**: The preferred type of lodging (e.g., "budget," "luxury hotel," "apartment rental").
 - **Interests**: The main purpose or interests of the trip (e.g., "food," "culture," "adventure," "relaxation").

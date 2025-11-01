@@ -1,30 +1,42 @@
-"""Amadeus API integration for flight search and booking."""
+"""Amadeus API integration for flight search and booking.
+
+This module provides the service class and agent-callable tool functions
+for interacting with the Amadeus Flight Search APIs.
+"""
 
 import os
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 from datetime import datetime, timedelta
 import requests
 from google.adk.tools import ToolContext
 
+# --- Service Class for Amadeus API Interaction ---
 
 class AmadeusFlightsService:
-    """Service for interacting with Amadeus Flight API."""
-    
+    """
+    Service class to handle all interactions with the Amadeus Flight APIs.
+    Manages API credentials, authentication (OAuth2), and request execution.
+    """
+
     def __init__(self):
-        self.api_key = os.getenv("AMADEUS_API_KEY")
-        self.api_secret = os.getenv("AMADEUS_API_SECRET")
+        """Initializes the Amadeus service, loading credentials from environment variables."""
+        self.api_key = os.getenv("AMADEUS_CLIENT_ID")
+        self.api_secret = os.getenv("AMADEUS_CLIENT_SECRET")
         self.base_url = "https://test.api.amadeus.com"  # Use production URL for live data
-        self.access_token = None
-        self.token_expires_at = None
-    
+        self.access_token: Optional[str] = None
+        self.token_expires_at: Optional[datetime] = None
+
+        if not self.api_key or not self.api_secret:
+            raise ValueError("AMADEUS_API_KEY and AMADEUS_API_SECRET environment variables must be set.")
+
     def _get_access_token(self) -> str:
-        """Get or refresh the access token."""
+        """
+        Retrieves a new OAuth2 access token from Amadeus if the current one is
+        missing or expired. Caches the token for reuse.
+        """
         if self.access_token and self.token_expires_at and datetime.now() < self.token_expires_at:
             return self.access_token
-        
-        if not self.api_key or not self.api_secret:
-            raise ValueError("AMADEUS_API_KEY and AMADEUS_API_SECRET must be set")
-        
+
         url = f"{self.base_url}/v1/security/oauth2/token"
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         data = {
@@ -32,37 +44,43 @@ class AmadeusFlightsService:
             "client_id": self.api_key,
             "client_secret": self.api_secret
         }
-        
+
         try:
-            response = requests.post(url, headers=headers, data=data)
-            response.raise_for_status()
+            response = requests.post(url, headers=headers, data=data, timeout=10)
+            response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
             token_data = response.json()
-            
+
             self.access_token = token_data["access_token"]
-            expires_in = token_data.get("expires_in", 1800)  # Default 30 minutes
-            self.token_expires_at = datetime.now() + timedelta(seconds=expires_in - 60)  # Refresh 1 min early
-            
+            # Refresh token 60 seconds before it actually expires as a safety buffer
+            expires_in = token_data.get("expires_in", 1799)
+            self.token_expires_at = datetime.now() + timedelta(seconds=expires_in - 60)
+
             return self.access_token
         except requests.exceptions.RequestException as e:
             raise Exception(f"Failed to get Amadeus access token: {e}")
-    
-    def _make_request(self, endpoint: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
-        """Make authenticated request to Amadeus API."""
+
+    def _make_request(self, endpoint: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        Makes an authenticated GET request to a specified Amadeus API endpoint.
+        """
         token = self._get_access_token()
         headers = {"Authorization": f"Bearer {token}"}
-        
+        full_url = f"{self.base_url}{endpoint}"
+
         try:
-            response = requests.get(f"{self.base_url}{endpoint}", headers=headers, params=params)
+            response = requests.get(full_url, headers=headers, params=params, timeout=15)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            raise Exception(f"Amadeus API request failed: {e}")
-    
-    def search_flights(self, 
-                      origin: str, 
-                      destination: str, 
+            # Include response text for better debugging if available
+            error_details = e.response.text if e.response else "No response from server"
+            raise Exception(f"Amadeus API request to {endpoint} failed: {e}. Details: {error_details}")
+
+    def search_flights(self,
+                      origin: str,
+                      destination: str,
                       departure_date: str,
-                      return_date: str = None,
+                      return_date: Optional[str] = None,
                       adults: int = 1,
                       children: int = 0,
                       infants: int = 0,
@@ -102,13 +120,13 @@ class AmadeusFlightsService:
             "currencyCode": currency_code.upper(),
             "max": 10  # Limit results
         }
-        
+
         if return_date:
             params["returnDate"] = return_date
-        
+
         if max_price:
             params["maxPrice"] = max_price
-        
+
         return self._make_request("/v2/shopping/flight-offers", params)
     
     def get_flight_offers(self, 
@@ -150,15 +168,17 @@ class AmadeusFlightsService:
         """
         Get IATA code for a city name.
         """
-        params = {"keyword": city_name, "subType": "AIRPORT"}
+        params = {"keyword": query, "subType": "AIRPORT,CITY"}
         result = self._make_request("/v1/reference-data/locations", params)
-        
-        if result.get("data"):
+
+        if result and result.get("data"):
             return result["data"][0]["iataCode"]
-        return city_name  # Return original if not found
+        return query  # Return original query if no code is found
 
 
-# Initialize the service
+# --- Agent-Callable Tools ---
+
+# Initialize the service as a singleton to be used by the tool functions
 amadeus_flights_service = AmadeusFlightsService()
 
 
@@ -167,8 +187,9 @@ def search_flights_tool(origin: str, destination: str, departure_date: str,
                        adults: int = 1, travel_class: str = "ECONOMY", 
                        max_price: int = None, currency_code: str = None) -> Dict[str, Any]:
     """
-    Tool for searching flights using Amadeus API.
-    
+    Searches for one-way or round-trip flight offers. Use this to find available
+    flights with pricing based on origin, destination, dates, and other preferences.
+
     Args:
         origin: Origin airport/city code
         destination: Destination airport/city code  
@@ -181,18 +202,17 @@ def search_flights_tool(origin: str, destination: str, departure_date: str,
         tool_context: ADK tool context
     
     Returns:
-        Flight search results
+        A dictionary containing flight offer data from the Amadeus API, or an
+        error dictionary if the search fails.
     """
     try:
-        # Try to get city codes if not already IATA codes
-        if len(origin) > 3:
-            origin = amadeus_flights_service.get_airport_city_code(origin)
-        if len(destination) > 3:
-            destination = amadeus_flights_service.get_airport_city_code(destination)
-        
+        # Convert city names to IATA codes for reliability if they aren't already codes
+        origin_code = amadeus_flights_service.get_airport_city_code(origin) if len(origin) > 3 else origin
+        destination_code = amadeus_flights_service.get_airport_city_code(destination) if len(destination) > 3 else destination
+
         results = amadeus_flights_service.search_flights(
-            origin=origin,
-            destination=destination,
+            origin=origin_code,
+            destination=destination_code,
             departure_date=departure_date,
             return_date=return_date,
             adults=adults,
@@ -243,7 +263,8 @@ def get_flight_offers_tool(origin: str, destination: str, departure_date: str,
         Flight offers with pricing
     """
     try:
-        results = amadeus_flights_service.get_flight_offers(
+        # This tool uses the same underlying service method as search_flights_tool but with fewer params
+        results = amadeus_flights_service.search_flights(
             origin=origin,
             destination=destination,
             departure_date=departure_date,
@@ -251,8 +272,11 @@ def get_flight_offers_tool(origin: str, destination: str, departure_date: str,
             adults=adults,
             currency_code=currency_code
         )
-        
         return results
-        
+
     except Exception as e:
-        return {"error": f"Failed to get flight offers: {str(e)}"}
+        # Return a structured error message
+        return {
+            "error": True,
+            "message": f"Failed to get flight offers: {str(e)}"
+        }
