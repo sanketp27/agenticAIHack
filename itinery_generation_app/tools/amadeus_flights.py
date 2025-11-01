@@ -67,7 +67,8 @@ class AmadeusFlightsService:
                       children: int = 0,
                       infants: int = 0,
                       travel_class: str = "ECONOMY",
-                      max_price: int = None) -> Dict[str, Any]:
+                      max_price: int = None,
+                      currency_code: str = None) -> Dict[str, Any]:
         """
         Search for flights using Amadeus API.
         
@@ -80,11 +81,16 @@ class AmadeusFlightsService:
             children: Number of child passengers
             infants: Number of infant passengers
             travel_class: Travel class (ECONOMY, PREMIUM_ECONOMY, BUSINESS, FIRST)
-            max_price: Maximum price filter in USD
+            max_price: Maximum price filter (in the specified currency)
+            currency_code: Currency code (e.g., 'INR', 'USD', 'EUR'). Defaults to INR, falls back to USD.
         
         Returns:
             Dictionary containing flight search results
         """
+        # Default to INR if not specified, fallback to USD
+        if not currency_code:
+            currency_code = os.getenv("AMADEUS_CURRENCY", "INR")
+        
         params = {
             "originLocationCode": origin,
             "destinationLocationCode": destination,
@@ -93,7 +99,7 @@ class AmadeusFlightsService:
             "children": children,
             "infants": infants,
             "travelClass": travel_class,
-            "currencyCode": "USD",
+            "currencyCode": currency_code.upper(),
             "max": 10  # Limit results
         }
         
@@ -110,16 +116,29 @@ class AmadeusFlightsService:
                          destination: str, 
                          departure_date: str,
                          return_date: str = None,
-                         adults: int = 1) -> Dict[str, Any]:
+                         adults: int = 1,
+                         currency_code: str = None) -> Dict[str, Any]:
         """
         Get flight offers with pricing and booking details.
+        
+        Args:
+            origin: IATA code for origin airport
+            destination: IATA code for destination airport
+            departure_date: Departure date in YYYY-MM-DD format
+            return_date: Return date in YYYY-MM-DD format (optional)
+            adults: Number of adult passengers
+            currency_code: Currency code (e.g., 'INR', 'USD', 'EUR'). Defaults to INR, falls back to USD.
         """
+        # Default to INR if not specified, fallback to USD
+        if not currency_code:
+            currency_code = os.getenv("AMADEUS_CURRENCY", "INR")
+        
         params = {
             "originLocationCode": origin,
             "destinationLocationCode": destination,
             "departureDate": departure_date,
             "adults": adults,
-            "currencyCode": "USD"
+            "currencyCode": currency_code.upper()
         }
         
         if return_date:
@@ -146,7 +165,7 @@ amadeus_flights_service = AmadeusFlightsService()
 def search_flights_tool(origin: str, destination: str, departure_date: str, 
                        tool_context: ToolContext, return_date: str = None, 
                        adults: int = 1, travel_class: str = "ECONOMY", 
-                       max_price: int = None) -> Dict[str, Any]:
+                       max_price: int = None, currency_code: str = None) -> Dict[str, Any]:
     """
     Tool for searching flights using Amadeus API.
     
@@ -157,7 +176,8 @@ def search_flights_tool(origin: str, destination: str, departure_date: str,
         return_date: Return date (YYYY-MM-DD) - optional
         adults: Number of adult passengers
         travel_class: Travel class (ECONOMY, PREMIUM_ECONOMY, BUSINESS, FIRST)
-        max_price: Maximum price in USD
+        max_price: Maximum price (in the specified currency)
+        currency_code: Currency code (e.g., 'INR', 'USD', 'EUR'). Defaults to INR.
         tool_context: ADK tool context
     
     Returns:
@@ -177,7 +197,8 @@ def search_flights_tool(origin: str, destination: str, departure_date: str,
             return_date=return_date,
             adults=adults,
             travel_class=travel_class,
-            max_price=max_price
+            max_price=max_price,
+            currency_code=currency_code
         )
         
         # Store results in context
@@ -205,9 +226,21 @@ def search_flights_tool(origin: str, destination: str, departure_date: str,
 
 def get_flight_offers_tool(origin: str, destination: str, departure_date: str,
                           tool_context: ToolContext, return_date: str = None, 
-                          adults: int = 1) -> Dict[str, Any]:
+                          adults: int = 1, currency_code: str = None) -> Dict[str, Any]:
     """
     Tool for getting detailed flight offers with pricing.
+    
+    Args:
+        origin: Origin airport/city code
+        destination: Destination airport/city code
+        departure_date: Departure date (YYYY-MM-DD)
+        return_date: Return date (YYYY-MM-DD) - optional
+        adults: Number of adult passengers
+        currency_code: Currency code (e.g., 'INR', 'USD', 'EUR'). Defaults to INR.
+        tool_context: ADK tool context
+    
+    Returns:
+        Flight offers with pricing
     """
     try:
         results = amadeus_flights_service.get_flight_offers(
@@ -215,7 +248,8 @@ def get_flight_offers_tool(origin: str, destination: str, departure_date: str,
             destination=destination,
             departure_date=departure_date,
             return_date=return_date,
-            adults=adults
+            adults=adults,
+            currency_code=currency_code
         )
         
         return results
