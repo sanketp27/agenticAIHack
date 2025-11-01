@@ -156,31 +156,66 @@ def search_hotels_tool(
             adults=adults,
             roomQuantity=rooms
         )
+        
+        # Store results in context
+        if "hotel_search_results" not in tool_context.state:
+            tool_context.state["hotel_search_results"] = []
+        
+        tool_context.state["hotel_search_results"].append({
+            "search_params": {
+                "city": city,
+                "check_in_date": check_in_date,
+                "check_out_date": check_out_date,
+                "adults": adults,
+                "rooms": rooms
+            },
+            "results": results
+        })
+
         return results
 
     except Exception as e:
         return {"error": f"Hotel search failed: {str(e)}"}
 
 
-def get_hotel_offers_tool(hotel_ids: List[str], check_in_date: str, 
-                         check_out_date: str, tool_context: ToolContext,
-                         adults: int = 1, rooms: int = 1) -> Dict[str, Any]:
-    """
-    Tool for getting detailed hotel offers with pricing.
-    """
-    try:
-        results = amadeus_hotels_service.get_hotel_offers(
-            hotel_ids=hotel_ids,
-            check_in_date=check_in_date,
-            check_out_date=check_out_date,
-            adults=adults,
-            rooms=rooms
-        )
+# def get_hotel_offers_tool(hotel_ids: List[str], check_in_date: str, 
+#                           check_out_date: str, tool_context: ToolContext,
+#                           adults: int = 1, rooms: int = 1) -> Dict[str, Any]:
+#     """
+#     Tool for getting detailed hotel offers with pricing.
+    
+#     Args:
+#         hotel_ids: A list of unique hotel IDs.
+#         check_in_date: The check-in date in YYYY-MM-DD format.
+#         check_out_date: The check-out date in YYYY-MM-DD format.
+#         adults: Number of adults per room. Defaults to 1.
+#         rooms: Number of rooms to book. Defaults to 1.
+#         tool_context: The execution context for the tool provided by the ADK.
+
+#     Returns:
+#         A dictionary containing detailed hotel offer data or an error message.
+#     """
+#     try:
+#         results = amadeus_hotels_service.get_hotel_offers(
+#             hotel_ids=hotel_ids,
+#             check_in_date=check_in_date,
+#             check_out_date=check_out_date,
+#             adults=adults,
+#             rooms=rooms
+#         )
+
+#         if "hotel_offers_results" not in tool_context.state:
+#             tool_context.state["hotel_offers_results"] = []
         
-        return results
+#         tool_context.state["hotel_offers_results"].append({
+#             "search_params": {"hotel_ids": hotel_ids},
+#             "results": results
+#         })
         
-    except Exception as e:
-        return {"error": f"Failed to get hotel offers: {str(e)}"}
+#         return results
+        
+#     except Exception as e:
+#         return {"error": f"Failed to get hotel offers: {str(e)}"}
 
 
 def get_hotel_details_tool(hotel_id: str, tool_context: ToolContext) -> Dict[str, Any]:
@@ -197,6 +232,16 @@ def get_hotel_details_tool(hotel_id: str, tool_context: ToolContext) -> Dict[str
     """
     try:
         results = amadeus_hotels_service.get_hotel_details(hotel_id)
+
+        # Store results in context
+        if "hotel_details_results" not in tool_context.state:
+            tool_context.state["hotel_details_results"] = []
+        
+        tool_context.state["hotel_details_results"].append({
+            "search_params": {"hotel_id": hotel_id},
+            "results": results
+        })
+        
         return results
 
     except Exception as e:
